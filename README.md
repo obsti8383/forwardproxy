@@ -1,9 +1,5 @@
 # Secure forward proxy plugin for the Caddy web server
 
-[![Build Status](https://travis-ci.org/caddyserver/forwardproxy.svg?branch=master)](https://travis-ci.org/caddyserver/forwardproxy)  
-[![Join the chat at https://gitter.im/forwardproxy/Lobby](https://badges.gitter.im/forwardproxy/Lobby.svg)](https://gitter.im/forwardproxy/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-
 This plugin enables [Caddy](https://caddyserver.com) to act as a forward proxy, with support for HTTP/2.0 and HTTP/1.1 requests. HTTP/2.0 will usually improve performance due to multiplexing.
 
 Forward proxy plugin includes common features like Access Control Lists and authentication, as well as some unique features to assist with security and privacy. Default configuration of forward proxy is compliant with existing HTTP standards, but some features force plugin to exhibit non-standard but non-breaking behavior to preserve privacy.
@@ -16,38 +12,29 @@ For a complete list of features and their usage, see Caddyfile syntax:
 
 The simplest way to enable the forward proxy without authentication just include the `forward_proxy` directive in your Caddyfile. However, this allows anyone to use your server as a proxy, which might not be desirable.
 
-The `forward_proxy` directive has no default order and must be used within a `route` directive to explicitly specify its order of evaluation. In the Caddyfile the addresses must start with `:443` for the `forward_proxy` to work for proxy requests of all origins.
+Using the `order` directive you must give the order in which `forward_proxy` and other directives should be used.
 
-Here's an example of all properties in use (note that the syntax is subject to change):
+In the Caddyfile the addresses must start with `:443` for the `forward_proxy` to work for proxy requests of all origins.
+
+Simple example that uses forward_proxy as first priority and as second just shows a webpage (using `file_server` directive) to hide that this is a proxy:
 
 ```
-:443, example.com
-route {
+{
+  order forward_proxy before file_server
+}
+:443, example.com {
+  tls acme@example.com
   forward_proxy {
-    basic_auth user1 0NtCL2JPJBgPPMmlPcJ
-    basic_auth user2 密码
-    ports     80 443
+    basic_auth abc def
     hide_ip
     hide_via
-    probe_resistance secret-link-kWWL9Q.com # alternatively you can use a real domain, such as caddyserver.com
-    serve_pac        /secret-proxy.pac
-    dial_timeout     30
-    upstream         https://user:password@extra-upstream-hop.com
-    acl {
-      allow     *.caddyserver.com
-      deny      192.168.1.1/32 192.168.0.0/16 *.prohibitedsite.com *.localhost
-      allow     ::1/128 8.8.8.8 github.com *.github.io
-      allow_file /path/to/whitelist.txt
-      deny_file  /path/to/blacklist.txt
-      allow     all
-      deny      all # unreachable rule, remaining requests are matched by `allow all` above
-    }
+    probe_resistance
   }
-  file_server
+  file_server {
+    root /home/user/webpage
+  }
 }
 ```
-
-(The square brackets `[ ]` indicate values you should replace; do not actually include the brackets.)
 
 ##### Security
 
@@ -141,17 +128,19 @@ Supported schemes to localhost: socks5, http, https (certificate check is ignore
 _Default: no upstream proxy._
 
 ## Get forwardproxy
+
 #### Download prebuilt binary
-Binaries are at https://caddyserver.com/download  
-Don't forget to add `http.forwardproxy` plugin.
+
+Linux 64bit binaries are at <https://github.com/klzgrad/forwardproxy/releases>
 
 #### Build from source
 
-0. Install latest Golang 1.12 or above and set export GO111MODULE=on
-1. ```bash
-   go install github.com/caddyserver/forwardproxy/cmd/caddy
-   ```   
-   Built `caddy` binary will be stored in $GOPATH/bin.  
+0. Install Golang 1.14 or above and the `git` client
+1. Checkout repository: `git checkout https://github.com/klzgrad/forwardproxy.git`
+2. Change into directory: `cd forwardproxy`
+3. Install caddyservers xcaddy: `go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest`
+4. Build caddy with forwardproxy: `xcaddy build --with github.com/caddyserver/forwardproxy@caddy2=$PWD`
+5. Result is a `caddy` executable that you can e.g. directly start with `sudo ./caddy run` (create your `Caddyfile` in the same directory)
 
 ## Client Configuration
 
