@@ -142,6 +142,10 @@ Linux 64bit binaries are at <https://github.com/klzgrad/forwardproxy/releases>
 4. Build caddy with forwardproxy: `xcaddy build --with github.com/caddyserver/forwardproxy@caddy2=$PWD`
 5. Result is a `caddy` executable that you can e.g. directly start with `sudo ./caddy run` (create your `Caddyfile` in the same directory)
 
+### Running as daemon
+
+Manually install Caddy as a service on Linux with these instructions: [Systemd unit example](https://github.com/klzgrad/naiveproxy/wiki/Run-Caddy-as-a-daemon)
+
 ## Client Configuration
 
 Please be aware that client support varies widely, and there are edge cases where clients may not use the proxy when it should or could. It's up to you to be aware of these limitations.
