@@ -36,7 +36,7 @@ Simple example that uses forward_proxy as first priority and as second just show
 }
 ```
 
-##### Security
+### Security
 
 - **basic_auth [user] [password]**  
 Sets basic HTTP auth credentials. This property may be repeated multiple times. Note that this is different from Caddy's built-in `basic_auth` directive. BE SURE TO CHECK THE NAME OF THE SITE THAT IS REQUESTING CREDENTIALS BEFORE YOU ENTER THEM.  
@@ -55,7 +55,7 @@ Make sure that specified domain name is visitable, does not contain uppercase ch
 Only this address will trigger a 407 response, prompting browsers to request credentials from user and cache them for the rest of the session.
 _Default: no probing resistance._
 
-##### Privacy
+### Privacy
 
 - **hide_ip**  
 If set, forwardproxy will not add user's IP to "Forwarded:" header.  
@@ -67,7 +67,7 @@ If set, forwardproxy will not add Via header, and prevents simple way to detect 
 WARNING: there are other side-channels to determine this.  
 _Default: no hiding; Header in form of `Via: 2.0 caddy` will be sent out._
 
-##### Access Control
+### Access Control
 
 - **ports [integer] [integer]...**  
 Specifies ports forwardproxy will whitelist for all requests. Other ports will be forbidden.  
@@ -107,13 +107,13 @@ acl {
 }  
 _Default deny rules intend to prohibit access to localhost and local networks and may be expanded in future._
 
-##### Timeouts
+### Timeouts
 
 - **dial_timeout [integer]**  
 Sets timeout (in seconds) for establishing TCP connection to target website. Affects all requests.  
 _Default: 20 seconds._
 
-##### Other
+### Other
 
 - **serve_pac [/path.pac]**  
 Generate (in-memory) and serve a [Proxy Auto-Config](https://en.wikipedia.org/wiki/Proxy_auto-config) file on given path. If no path is provided, the PAC file will be served at `/proxy.pac`. NOTE: If you enable probe_resistance, your PAC file should also be served at a secret location; serving it at a predictable path can easily defeat probe resistance.  
@@ -129,11 +129,11 @@ _Default: no upstream proxy._
 
 ## Get forwardproxy
 
-#### Download prebuilt binary
+### Download prebuilt binary
 
 Linux 64bit binaries are at <https://github.com/klzgrad/forwardproxy/releases>
 
-#### Build from source
+### Build from source
 
 0. Install Golang 1.14 or above and the `git` client
 1. Checkout repository: `git checkout https://github.com/klzgrad/forwardproxy.git`
